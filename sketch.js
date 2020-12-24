@@ -22,7 +22,7 @@ function setup(){
   database = firebase.database();
 
   foodS = 50;
-
+  writeStock(foodS);
   foodStock = database.ref('Food');
   foodStock.on("value", readStock);
 
@@ -38,15 +38,19 @@ function draw(){
   background(46, 139, 87);
 
   if(keyWentDown(UP_ARROW)){
-    writeStock(foodS);
     dog.addImage(happyDogImg);
     milk.visible = true;
   }
   if(keyWentUp(UP_ARROW)){
-    writeStock(foodS);
     dog.addImage(dogImg);
     milk.visible = false;
-    foodS = foodS - 1
+    if(foodS<=0){
+       foodS = 0;
+      }
+    else{
+      foodS = foodS - 1
+    }
+    writeStock(foodS);
   }
 
   drawSprites();
@@ -61,21 +65,15 @@ function draw(){
   text("Milk Bottles Remaining : " + foodS,150,440);
 
 }
-function readStock(){
+function readStock(data){
   foodS = data.val();
 }
 
-function writeStock(){
-  if(foodS<=0){
-    foodS = 0;
-  }
-  else{
-    foodS = foodS - 1
-  }
+function writeStock(x){
 
-  //database.ref('/').update({
-    //Food:x
-  //})
+  database.ref('/').update({
+    Food:x
+  })
 }
 
 
